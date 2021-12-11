@@ -1,5 +1,5 @@
 from PIL import Image # (pip install Pillow)
-import os
+import os, glob
 import datetime
 import json
 from pycococreatortools import pycococreatortools
@@ -103,22 +103,16 @@ CATEGORIES = [
         'id': 1,
         'name': 'small_cell',
     },
-    {
-        'id': 2,
-        'name': 'big_cell',
-    },
+    #{
+    #    'id': 2,
+    #    'name': 'big_cell',
+    #},
 ]
 
-coco_output = {
-    "info": INFO,
-    "licenses": LICENSES,
-    "categories": CATEGORIES,
-    "images": [],
-    "annotations": []
-}
 
+IMAGE_DIR = "/home/james/LIVECell/images/sliced/labelled/all"
+#IMAGE_DIR = "/home/james/LIVECell/images/unlabelled_data/empty"
 
-IMAGE_DIR = "/home/james/LIVECell/images/data/empty"
 small_cells_s = (0, 179, 205)
 small_cells_b = (77, 256, 256)
 big_cells_s = (205 ,1, 205)
@@ -126,56 +120,72 @@ big_cells_b = (256, 101, 256)
 
 mask_images = []
 
-small_cell_id, big_cell_id = [1, 2]
+#small_cell_id, big_cell_id = [1, 2]
+small_cell_id = 1
 category_ids = {
     '(28, 230, 255)': small_cell_id,
-    '(255, 52, 255)': big_cell_id,
+    '(255, 52, 255)': small_cell_id,
 }
 
 image_id = 1
+annotation_id = 1
 is_crowd = 0
 
-for root, _, files in os.walk(IMAGE_DIR):
-    # go through each image
-    for image_filename in files:
-        image = Image.open(os.path.join(IMAGE_DIR, image_filename))
-        pixdata = image.load()
-        for y in range(image.size[1]):
-            for x in range(image.size[0]):
-                if (big_cells_s[0]<=pixdata[x, y][0]<=big_cells_b[0] and big_cells_s[1]<=pixdata[x, y][1]<=big_cells_b[1] and \
-                big_cells_s[2]<=pixdata[x, y][2]<=big_cells_b[2]) :
-                    pixdata[x, y] = (255, 52, 255)
-                elif (small_cells_s[0]<=pixdata[x, y][0]<=small_cells_b[0] and \
-                small_cells_s[1]<=pixdata[x, y][1]<=small_cells_b[1] and small_cells_s[2]<=pixdata[x, y][2]<=small_cells_b[2]):
-                    pixdata[x, y] = (28, 230, 255)
-                #if pixdata[x, y] != small_cells and pixdata[x, y] != big_cells:
-                    #print(pixdata[x,y])
-                else :
-                    pixdata[x, y] = (0, 0, 0)
+for folder in os.listdir(IMAGE_DIR):
+    for root, _, files in os.walk(os.path.join(IMAGE_DIR, folder)):
+        coco_output = {
+            "info": INFO,
+            "licenses": LICENSES,
+            "categories": CATEGORIES,
+            "images": [],
+            "annotations": []
+        }
+        # go through each image
+        for image_filename in files:
+            if os.path.splitext(image_filename)[1].lower() in ('.jpg', '.jpeg'):
+                image = Image.open(os.path.join(IMAGE_DIR, folder, image_filename))
+                pixdata = image.load()
+                for y in range(image.size[1]):
+                    for x in range(image.size[0]):
+                        if (big_cells_s[0]<=pixdata[x, y][0]<=big_cells_b[0] and big_cells_s[1]<=pixdata[x, y][1]<=big_cells_b[1] and \
+                        big_cells_s[2]<=pixdata[x, y][2]<=big_cells_b[2]) :
+                            pixdata[x, y] = (255, 52, 255)
+                        elif (small_cells_s[0]<=pixdata[x, y][0]<=small_cells_b[0] and \
+                        small_cells_s[1]<=pixdata[x, y][1]<=small_cells_b[1] and small_cells_s[2]<=pixdata[x, y][2]<=small_cells_b[2]):
+                            #pixdata[x, y] = (28, 230, 255)
+                            pixdata[x, y] = (255, 52, 255)
+                        #if pixdata[x, y] != small_cells and pixdata[x, y] != big_cells:
+                            #print(pixdata[x,y])
+                        else :
+                            pixdata[x, y] = (0, 0, 0)
 
-        #image.show()
+                #image.show()
 
-        # These ids will be automatically increased as we go
-        annotation_id = 1
-        image_info = pycococreatortools.create_image_info(
-            image_id, os.path.basename(image_filename), image.size)
-        #print(image_info)
-        coco_output["images"].append(image_info)
+                # These ids will be automatically increased as we go
+                image_info = pycococreatortools.create_image_info(
+                    image_id, os.path.basename(image_filename), image.size)
+                #print(image_info)
 
-        # Create the annotations
-        annotations = []
-        sub_masks = create_sub_masks(image)
-        for color, sub_mask in sub_masks.items():
-            #print(category_ids)
-            category_id = category_ids[color]
-            annotation = create_sub_mask_annotation(sub_mask, image_id, category_id, annotation_id, is_crowd)
-            annotations.append(annotation)
-            annotation_id += 1
-        image_id += 1
-        coco_output["annotations"].append(annotations)
+                # Create the annotations
+                annotations = []
+                sub_masks = create_sub_masks(image)
+                if sub_masks :
+                    for color, sub_mask in sub_masks.items():
+                        #print(category_ids)
+                        #print(color, sub_mask)
+                        category_id = category_ids[color]
+                        #print(category_id)
+                        annotation = create_sub_mask_annotation(sub_mask, image_id, category_id, annotation_id, is_crowd)
+                        #   print(annotation)
+                        #annotations.append(annotation)
+                        annotations = annotation
+                    coco_output["annotations"].append(annotations)
+                    coco_output["images"].append(image_info)
+                annotation_id += 1
+                image_id += 1
 
-with open(os.path.join(IMAGE_DIR, 'empty.json'), 'w') as outfile:
-    json.dump(coco_output, outfile)
+        with open(os.path.join(IMAGE_DIR, folder, 'annotations.json'), 'w') as outfile:
+            json.dump(coco_output, outfile)
 
 """
 #plant_book_mask_image = Image.open('/home/james/LIVECell/images/data/empty/image_labelled_0.jpg')#.convert('RGB')
