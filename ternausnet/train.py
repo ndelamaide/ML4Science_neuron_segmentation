@@ -2,15 +2,19 @@ import torch
 import argparse
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-from ternausnet.models import UNet16
+from models import UNet16, UNet11
 from dataset import CellsDataset, get_file_names
-from loss import LossBinary
+from loss import LossBinary, LossMulti
 import albumentations as A
 from utils import train, validate, load_ckp, check_crop_size
 import os
 import numpy as np
 import sys
 import pickle
+
+
+model_list = {'UNet11': UNet11,
+               'UNet16': UNet16}
 
 
 def main():
@@ -25,12 +29,16 @@ def main():
     arg('--crop_w', default=768, type=int)
 
     # Model params
+    arg('--model', default='UNet16', type=str, choices=model_list.keys())
+    arg('--pretrained', default=True, type=bool)
+    arg('--num_classes', default=1, type=int)
     arg('--lr', default=0.001, type=float)
     arg('--batch_size', default=4, type=int)
     arg('--epochs', default=1, type=int)
 
     # Loading params
     arg('--checkpoint_path', default="", type=str)
+    arg('--save_checkpoint_name', default='model_checkpoint.pt', type=str)
     arg('--file_names_train', default='train_data/images', type=str)
     arg('--file_names_val', default='val_data/images', type=str)
 
@@ -57,6 +65,7 @@ def main():
                 A.CenterCrop(height=args.crop_h, width=args.crop_w, p=1),
                 A.Normalize(p=1)
                 ], p=p)
+                
 
     file_names_train = get_file_names(args.file_names_train)
     file_names_val = get_file_names(args.file_names_val)
@@ -68,29 +77,40 @@ def main():
     val_loader = DataLoader(dataset=val_dataset, batch_size=args.batch_size)
 
 
-    model = UNet16(pretrained=True)
+    model_name = model_list[args.model]
+    model = model_name(num_classes=args.num_classes, pretrained=args.pretrained)
+
     optimizer = Adam(model.parameters(), lr=args.lr)
-    criterion = LossBinary()
+
+    if args.num_classes > 1:
+
+        criterion = LossMulti(num_classes=args.num_classes)
+
+    else:
+        criterion = LossBinary()
+
     start_epoch = 1
-
     train_metrics = []
-
     val_metrics = []
 
     # Create folders if needed
     metrics_base_path = os.path.join(os.pardir, 'ternausnet/metrics')
+    checkpoints_folder_path = os.path.join(os.pardir, 'ternausnet/checkpoints/')
+    save_path = os.path.join(os.pardir, 'ternausnet/checkpoints/' + args.save_checkpoint_name)
+
 
     if not os.path.exists(metrics_base_path):
         os.makedirs(metrics_base_path)
-    
-    models_base_path = os.path.join(os.pardir, 'ternausnet/models')
 
-    if not os.path.exists(models_base_path):
-        os.makedirs(models_base_path)
+    if not os.path.exists(checkpoints_folder_path):
+        os.makedirs(checkpoints_folder_path)
 
-    # Load the model if needed
+    # Load the model from checkpoint if needed
     if args.checkpoint_path != "":
+
         model, optimizer, start_epoch = load_ckp(os.path.join(os.pardir, args.checkpoint_path), model, optimizer)
+
+        epochs = start_epoch + args.epochs
 
         with open("metrics/train_metrics.txt", "rb") as fp:
             train_metrics = pickle.load(fp)
@@ -98,8 +118,13 @@ def main():
         with open("metrics/val_metrics.txt", "rb") as fp:
             val_metrics = pickle.load(fp)
     
+    else:
+        epochs = args.epochs
 
-    for epoch in range(start_epoch, args.epochs + 1):
+    
+    # Start training
+    for epoch in range(start_epoch, epochs + 1):
+
         l_train, j_train = train(train_loader, model, criterion, optimizer, epoch)
         l_val, j_val = validate(val_loader, model, criterion, epoch)
         
@@ -107,8 +132,6 @@ def main():
         val_metrics.append([np.mean(l_val), np.mean(j_val)])
 
         # Save everything
-        save_path = os.path.join(os.pardir, 'ternausnet/models/model_checkpoint.pt')
-
         torch.save({
             'epoch': epoch + 1,
             'model_state_dict': model.state_dict(),
