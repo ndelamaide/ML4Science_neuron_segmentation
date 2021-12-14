@@ -14,7 +14,7 @@ def main():
     arg = parser.add_argument
 
     # Loading params
-    arg('--checkpoint_path', default="ternausnet/models/model_checkpoint.pt", type=str)
+    arg('--checkpoint_path', default="ternausnet/checkpoints/model_checkpoint.pt", type=str)
     arg('--file_names_test', default='test_data/images', type=str)
     arg('--save_path', default='ternausnet/eval/', type=str)
 

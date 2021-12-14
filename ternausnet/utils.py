@@ -1,7 +1,8 @@
 import torch
 from tqdm import tqdm
-import matplotlib.pyplot as plt
+import cv2
 import numpy as np
+
 
 def train(train_loader, model, criterion, optimizer, epoch):
     
@@ -92,3 +93,18 @@ def load_ckp(checkpoint_fpath, model, optimizer):
 
     # return model, optimizer, epoch value
     return model, optimizer, checkpoint['epoch']
+
+def overlay(image, mask):
+
+    # Turn mask green
+    zeros = np.zeros(mask.shape)
+    green_mask = np.empty((mask.shape[0], mask.shape[1], 3))
+
+    green_mask[:, :, 0] = zeros
+    green_mask[:, :, 1] = mask
+    green_mask[:, :, 2] = zeros
+
+    img_overlay = cv2.addWeighted(image, 0.8, green_mask.astype(np.uint8), 0.2, 0)
+
+    return img_overlay
+    
