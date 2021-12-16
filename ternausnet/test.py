@@ -4,9 +4,14 @@ import pickle
 import os
 from utils import load_ckp
 from albumentations import Compose, Normalize
-from ternausnet.models import UNet16
+from models import UNet16, UNet11
 from torch.optim import Adam
 import argparse
+
+
+model_list = {'UNet11': UNet11,
+               'UNet16': UNet16}
+
 
 def main():
 
@@ -18,13 +23,11 @@ def main():
     arg('--file_names_test', default='test_data/images', type=str)
     arg('--save_path', default='ternausnet/eval/', type=str)
 
+    # Model params
+    arg('--model', default='UNet16', type=str, choices=model_list.keys())
+    arg('--num_classes', default=1, type=int)
+    
     args = parser.parse_args()
-
-    model = UNet16(pretrained=True)
-    optimizer = Adam(model.parameters())
-
-    model, optimizer, start_epoch = load_ckp(os.path.join(os.pardir,args.checkpoint_path), model, optimizer)
-    model.eval()
 
     p=1
     img_transform = Compose([Normalize(p=1)], p=p)
@@ -34,6 +37,13 @@ def main():
 
     if not os.path.exists(to_path):
         os.makedirs(to_path)
+
+    model_name = model_list[args.model]
+    model = model_name(num_classes=args.num_classes, pretrained=args.pretrained)
+    optimizer = Adam(model.parameters())
+
+    model, optimizer, start_epoch = load_ckp(os.path.join(os.pardir,args.checkpoint_path), model, optimizer)
+    model.eval()
 
     predict(model, file_names, to_path, img_transform)
 
