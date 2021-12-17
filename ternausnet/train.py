@@ -71,9 +71,9 @@ def main():
     file_names_val = get_file_names(args.file_names_val)
 
     # Define data loaders
-    train_dataset = CellsDataset(file_names_train, transform=train_transform)
+    train_dataset = CellsDataset(file_names_train, transform=train_transform, num_classes=args.num_classes)
     train_loader = DataLoader(dataset=train_dataset, batch_size=args.batch_size, shuffle=True)
-    val_dataset = CellsDataset(file_names_val, transform=val_transform)
+    val_dataset = CellsDataset(file_names_val, transform=val_transform, num_classes=args.num_classes)
     val_loader = DataLoader(dataset=val_dataset, batch_size=args.batch_size)
 
     model_name = model_list[args.model]
@@ -137,10 +137,10 @@ def main():
             'optimizer_state_dict': optimizer.state_dict(),
             }, save_path)
         
-        with open("metrics/train_metrics-" + args.model + ".txt", "wb") as fp:
+        with open("metrics/train_metrics.txt", "wb") as fp:
             pickle.dump(train_metrics, fp)
 
-        with open("metrics/val_metrics-" + args.model + ".txt", "wb") as fp:
+        with open("metrics/val_metrics.txt", "wb") as fp:
             pickle.dump(val_metrics, fp)
 
 
