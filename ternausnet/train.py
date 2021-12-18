@@ -109,7 +109,7 @@ def main():
 
         model, optimizer, start_epoch = load_ckp(os.path.join(os.pardir, args.checkpoint_path), model, optimizer)
 
-        epochs = start_epoch + args.epochs
+        epochs = start_epoch + args.epochs - 1
 
         with open("metrics/train_metrics.txt", "rb") as fp:
             train_metrics = pickle.load(fp)
@@ -125,7 +125,7 @@ def main():
     for epoch in range(start_epoch, epochs + 1):
 
         l_train, j_train = train(train_loader, model, criterion, optimizer, epoch)
-        l_val, j_val = validate(val_loader, model, criterion, epoch)
+        l_val, j_val = validate(val_loader, model, criterion, epoch, args.num_classes)
         
         train_metrics.append([np.mean(l_train), np.mean(j_train)])
         val_metrics.append([np.mean(l_val), np.mean(j_val)])

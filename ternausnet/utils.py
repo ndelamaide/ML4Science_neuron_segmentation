@@ -71,7 +71,7 @@ def validate(val_loader, model, criterion, epoch, num_classes):
             jaccard.append(jaccard_)
 
             stream.set_description(
-                "Epoch: {epoch}. Validation. | Loss: {loss:.0.4f}  | Jaccard: {jacc:.0.4f}".format(epoch=epoch, loss=loss.item(), jacc=jaccard[-1])
+                "Epoch: {epoch}. Validation. | Loss: {loss}  | Jaccard: {jacc}".format(epoch=epoch, loss=loss.item(), jacc=jaccard[-1])
             )
 
             losses.append(loss.item())     
@@ -141,17 +141,26 @@ def load_ckp(checkpoint_fpath, model, optimizer):
     return model, optimizer, checkpoint['epoch']
 
 
-def overlay(image, mask):
+def overlay(image, mask, num_classes=1):
 
-    # Turn mask green
     zeros = np.zeros(mask.shape)
-    green_mask = np.empty((mask.shape[0], mask.shape[1], 3))
+    mask_color = np.empty((mask.shape[0], mask.shape[1], 3))
 
-    green_mask[:, :, 0] = zeros
-    green_mask[:, :, 1] = mask
-    green_mask[:, :, 2] = zeros
+    if num_classes > 1:
 
-    img_overlay = cv2.addWeighted(image, 0.8, green_mask.astype(np.uint8), 0.2, 0)
+        ## TODO: CHECK SIZE OF MASK 
+        mask_color[:, :, 0] = mask[mask > 128] # Axons have value > 128
+        mask_color[:, :, 1] = mask[mask <= 128]
+        mask_color[:, :, 2] = zeros
+
+    else:
+
+        # Turn mask green
+        mask_color[:, :, 0] = zeros
+        mask_color[:, :, 1] = mask
+        mask_color[:, :, 2] = zeros
+
+    img_overlay = cv2.addWeighted(image, 0.8, mask_color.astype(np.uint8), 0.2, 0)
 
     return img_overlay
     

@@ -47,5 +47,7 @@ def main():
 
     predict(model, file_names, to_path, img_transform)
 
+    # After prediction run evaluation
+
 if __name__ == '__main__':
     main()
