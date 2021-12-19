@@ -21,9 +21,7 @@ def main():
     originals_base_path = os.path.join(os.pardir, 'ternausnet/data/originals_unordered')
 
     if args.num_classes > 1:
-
         masks_base_path = os.path.join(os.pardir, 'ternausnet/data/masks_with_axons/')
-
     else:
         masks_base_path = os.path.join(os.pardir, 'ternausnet/data/masks/')
 
@@ -50,6 +48,12 @@ def main():
 
     if not os.path.exists(temp_save_path):
         os.makedirs(temp_save_path)
+
+    # The other folders already exist
+    if args.num_classes > 1:
+        os.makedirs(train_save_path+"masks_with_axons")
+        os.makedirs(val_save_path+"masks_with_axons")
+        os.makedirs(test_save_path+"masks_with_axons")
 
 
     print("Dividing images in 4")
@@ -114,20 +118,37 @@ def main():
 
         if i < train_num - 1:
 
-            shutil.move(path_to_images[i], train_save_path+"images")
-            shutil.move(path_to_images[i].replace("image", "mask").replace(".tif", ".jpg"), train_save_path+"masks")
+            if args.num_classes > 1:
+                save_path = train_save_path+"masks_with_axons"
+            else : 
+                save_path = train_save_path+"masks"
+                shutil.move(path_to_images[i], train_save_path+"images") # Only move images for num_classes = 1 because for num_classes = 2 (axons) they already exist
+
+            shutil.move(path_to_images[i].replace("image", "mask").replace(".tif", ".jpg"), save_path)
         
         elif (i >= train_num) & (i < test_num -1):
 
-            shutil.move(path_to_images[i], test_save_path+"images")
-            shutil.move(path_to_images[i].replace("image", "mask").replace(".tif", ".jpg"), test_save_path+"masks")
+            if args.num_classes > 1:
+                save_path = test_save_path+"masks_with_axons"
+            else : 
+                save_path = test_save_path+"masks"
+                shutil.move(path_to_images[i], test_save_path+"images") 
+
+            shutil.move(path_to_images[i].replace("image", "mask").replace(".tif", ".jpg"), save_path)
         
         else:
 
-            shutil.move(path_to_images[i], val_save_path+"images")
-            shutil.move(path_to_images[i].replace("image", "mask").replace(".tif", ".jpg"), val_save_path+"masks")
+            if args.num_classes > 1:
+                save_path = val_save_path+"masks_with_axons"
+            else : 
+                save_path = val_save_path+"masks"
+                shutil.move(path_to_images[i], val_save_path+"images")
+
+            shutil.move(path_to_images[i].replace("image", "mask").replace(".tif", ".jpg"), save_path)
 
 
-    os.rmdir(temp_save_path)
+    shutil.rmtree(temp_save_path)
 
 
+if __name__ == '__main__':
+    main()
