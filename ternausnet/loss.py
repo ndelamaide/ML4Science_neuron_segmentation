@@ -29,12 +29,12 @@ class LossBinary:
 class LossMulti:
     def __init__(self, jaccard_weight=0.5, num_classes=1):
         
-        nll_weight = None
-        self.nll_loss = nn.NLLLoss2d(weight=nll_weight)
+        self.nll_loss = nn.NLLLoss()
         self.jaccard_weight = jaccard_weight
         self.num_classes = num_classes
 
     def __call__(self, outputs, targets):
+        
         loss = (1 - self.jaccard_weight) * self.nll_loss(outputs, targets)
 
         if self.jaccard_weight:
