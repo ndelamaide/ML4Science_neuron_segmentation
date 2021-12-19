@@ -2,7 +2,7 @@
 
 The goal of the project was to perform image segmentation on images of neuronal cells growing on a diamond.
 
-We implemented two variants of the TernausNet model : one is a U-Net with a VGG11 Encoder Pre-Trained on ImageNet for Image Segmentation, and the other uses VGG16 instead of VGG11 [arxiv paper](https://arxiv.org/abs/1801.05746).
+We implemented two variants of the TernausNet model : one is a U-Net with a VGG11 Encoder Pre-Trained on ImageNet for Image Segmentation, and the other uses VGG16 instead of VGG11 ([arxiv paper](https://arxiv.org/abs/1801.05746)).
 
 The lab gave us several images that we had to label by hand. As a first step, we only labeled the neurons and trained our models on those images. As a second step, we also labeled the axons and trained our models to segment both the neurons and axons.
 
