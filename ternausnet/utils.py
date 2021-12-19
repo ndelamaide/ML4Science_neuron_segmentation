@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 
-def train(train_loader, model, criterion, optimizer, epoch):
+def train(train_loader, model, criterion, optimizer, epoch, num_classes=1):
     
     model.train()
 
@@ -14,16 +14,26 @@ def train(train_loader, model, criterion, optimizer, epoch):
     stream = tqdm(train_loader)
 
     for i, (images, target) in enumerate(stream, start=1):
-        
+
         output = model(images)
         loss = criterion(output, target)
 
         with torch.no_grad():
-            jaccard_ = get_jaccard(target, (output > 0).float())
+
+            if num_classes > 1:
+                output_classes = output.data.numpy().argmax(axis=1)
+                target_classes = target.data.numpy()
+
+                matrix = calculate_confusion_matrix_from_arrays(output_classes, target_classes, num_classes)
+                jaccard_ = np.mean(calculate_iou(matrix))
+            
+            else:
+                jaccard_ = get_jaccard(target, (output > 0).float())
 
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+
         stream.set_description(
             "Epoch: {epoch}. Train. | Loss: {loss}  | Jaccard: {jacc}".format(epoch=epoch, loss=loss.item(), jacc=jaccard_)
         )
@@ -71,7 +81,7 @@ def validate(val_loader, model, criterion, epoch, num_classes):
             jaccard.append(jaccard_)
 
             stream.set_description(
-                "Epoch: {epoch}. Validation. | Loss: {loss}  | Jaccard: {jacc}".format(epoch=epoch, loss=loss.item(), jacc=jaccard[-1])
+                "Epoch: {epoch}. Validation. | Loss: {loss}  | Jaccard: {jacc}".format(epoch=epoch, loss=loss.item(), jacc=jaccard_)
             )
 
             losses.append(loss.item())     

@@ -70,11 +70,16 @@ def main():
     file_names_train = get_file_names(args.file_names_train)
     file_names_val = get_file_names(args.file_names_val)
 
+    if args.num_classes > 1:
+        batch_size = 1
+    else:
+        batch_size = args.batch_size
+
     # Define data loaders
     train_dataset = CellsDataset(file_names_train, transform=train_transform, num_classes=args.num_classes)
-    train_loader = DataLoader(dataset=train_dataset, batch_size=args.batch_size, shuffle=True)
+    train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
     val_dataset = CellsDataset(file_names_val, transform=val_transform, num_classes=args.num_classes)
-    val_loader = DataLoader(dataset=val_dataset, batch_size=args.batch_size)
+    val_loader = DataLoader(dataset=val_dataset, batch_size=batch_size)
 
     model_name = model_list[args.model]
     model = model_name(num_classes=args.num_classes, pretrained=args.pretrained)
