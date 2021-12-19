@@ -129,7 +129,7 @@ def main():
     # Start training
     for epoch in range(start_epoch, epochs + 1):
 
-        l_train, j_train = train(train_loader, model, criterion, optimizer, epoch)
+        l_train, j_train = train(train_loader, model, criterion, optimizer, epoch, args.num_classes)
         l_val, j_val = validate(val_loader, model, criterion, epoch, args.num_classes)
         
         train_metrics.append([np.mean(l_train), np.mean(j_train)])
