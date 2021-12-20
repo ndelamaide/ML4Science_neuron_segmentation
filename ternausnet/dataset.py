@@ -62,15 +62,14 @@ def load_mask(path, num_classes):
 
         mask_folder = "masks_with_axons"
         factor = 127
-        mask = cv2.imread(str(path).replace('images', mask_folder).replace('image', 'mask').replace(".tif", ".jpg"), cv2.IMREAD_UNCHANGED )
+        mask = cv2.imread(str(path).replace('images', mask_folder).replace('image', 'mask').replace(".tif", ".jpg"), cv2.IMREAD_UNCHANGED)
 
     else:
 
         mask_folder = "masks"
         factor = 255
 
-        mask = cv2.imread(str(path).replace('images', mask_folder).replace('image', 'mask').replace(".tif", ".jpg"), cv2.IMREAD_UNCHANGED )
+        mask = cv2.imread(str(path).replace('images', mask_folder).replace('image', 'mask').replace(".tif", ".jpg"), cv2.IMREAD_UNCHANGED)
         mask[mask != 255] = 0
-        
         
     return (mask / factor).astype(np.uint8)
