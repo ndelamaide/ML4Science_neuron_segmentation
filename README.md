@@ -10,35 +10,46 @@ The lab gave us several images that we had to label by hand. As a first step, we
 ## Data and models
 
 **TODO**
-The original images and their labels can be found on this [link]().
-The weights of our models, UNet11 and UNet16 for neurons only and for neurons and axons can be found on this [link]().
+The original images and their labels (neurons only and neurons + axons) can be found on this [link](https://drive.google.com/drive/folders/1p-e7g9fbw503xHYjhWuaKCHBirZWyk7E?usp=sharing).
+The weights of our models, UNet11 and UNet16 for neurons only and for neurons and axons can be found on this [link](https://drive.google.com/drive/folders/1DofS65A4cjx3uWAY7AP0IBJkSSqHukA8?usp=sharing).
+
+Ideally, you should respect the following structure when downloading the data we provide:
+
+├── ternausnet
+│   ├── checkpoints
+│   │   └── unet16.pt
+│   │   └── ...
+│   ├── data
+│   │   ├── labels_unordered
+│   │   ├── labels_unordered_axons
+│   │   ├── originals_unordered
+│   │
+│   ├── data_job_axons.sh
+│   ├── data_job_binary.sh
+│   ├── ...
 
 ## Pre-processing
 
 The images from the lab came in a folder structured like this : 
 
-- originals
-  - 200_2
-  - 200_4
-  - 400_2
-  - 400_4
-  - empty
+├── originals
+│   ├── 200_2
+│   ├── 200_4
+│   ├── 400_2
+│   ├── 400_4
+│   ├── empty
 
 We labeled the images and saved them in a folder following the same structure called *labels*. We also removed duplicate images to obtain a total of 41 images.
 We used the script `data_job_binary.sh` which converts the original images and the labeled images to a train - test - validation split (0.7% - 0.1 % - 0.2 %) of the original images and their masks (neurons only).
 To do so it creates two new folders *data/labels_unordered* and *data/originals_unordered* which contain the labeled and original images respectively numbered from 1 to 41. Then it creates the masks from the labels and finaly creates the split by creating three folders *train_data*, *val_data*, *test_data* structured like this:
 
-- folder_data
-  - images
-  
-     image_x.tif
-     
-     ....
-  - masks
-  
-     mask_x.jpg
-     
-     ....
+├── folder_data
+│   ├── images
+│   │   └──  image_x.tif
+│   │   └── ...    
+│   ├── masks
+│   │   └── mask_x.jpg
+│   │   └── ...
  
 Moreover each of the 41 images and their masks of size 1536 x 2048 where divided in 4 images of size 768 x 1024 by cropping the original images and masks.
 
@@ -54,7 +65,7 @@ To train our model, simply run `train.py`. Here is a list of useful arguments:
 - `--num_classes` : the number of classes. For neurons only, use a value of 1. For neurons and axons, use a value of 3.
 - `--batch_size` : the batch size, which is 4 by default. For num_classes > 1, it is set to 1.
 - `--epochs` : the number of epochs to train the model for.
-- `--checkpoint_path` : the path to load the model from. Only needed when using resuming training from a checkpoint. The path need to start by *ternausnet/*.
+- `--checkpoint_path` : the path to load the model from. Only needed when resuming training from a checkpoint. The path needs to start by *ternausnet/*.
 - `--save_checkpoint_name` : the name with which to save the model at the end of each training epoch, for example *unet16.pt*. It needs to end with either *.pt* or *.pth*
 
 
@@ -70,6 +81,18 @@ To evaluate our model, run `test.py`. Just like for training, here is a list of 
 
 - `--model` : the model to use, either UNet11 or UNet16.
 - `--num_classes` : the number of classes. For neurons only, use a value of 1. For neurons and axons, use a value of 3.
-- `--checkpoint_path` : the path to load the model from. The path need to start by *ternausnet/*.
+- `--checkpoint_path` : the path to load the model from. The path needs to start by *ternausnet/*.
 - `--file_names_test` : the relative path to the images to evaluate on, by default it's *test_data/images*.
 
+For each image, it will predict a mask and overlay it on top of the original image. Then it will compute the Intersection over Union (iou or jaccard) for each mask and class and save the results as a pickle file. You will end up with a folder looking like this :
+
+├── eval
+│   ├── masks
+│   │   └──  image_x_mask.jpg
+│   │   └── ...    
+│   ├── overlays
+│   │   └── image_x_overlay.jpg
+│   │   └── ...
+│   └── jaccard.txt
+
+When used to predict the segmentation of neurons only (num_classes = 1), the jaccard.txt file will contain a list of jaccard indexes. When used for neurons and axons (num_classes = 3), it will produce a list of lists of the form \[jaccard_neurons, jaccard_axons\].
