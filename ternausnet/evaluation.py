@@ -8,7 +8,6 @@ from PIL import Image
 from utils import overlay
 
 
-
 def predict(model, from_file_names, to_path, img_transform, num_classes=1):
 
     loader = DataLoader(
@@ -50,6 +49,6 @@ def predict(model, from_file_names, to_path, img_transform, num_classes=1):
                 
                 name = image_name.split("/")[-1][:-4]
 
-                cv2.imwrite(to_path + name + '_overlay.png', img_overlay)
+                cv2.imwrite(to_path + name + '_overlay.png', cv2.cvtColor(img_overlay, cv2.COLOR_RGB2BGR))
                 cv2.imwrite(to_path + name + "_mask.png", t_mask)
                 num += 1
