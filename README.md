@@ -10,6 +10,7 @@ The lab gave us several images that we had to label by hand. As a first step, we
 ## Data and models
 
 The original images and their labels (neurons only and neurons + axons) can be found on this [link](https://drive.google.com/drive/folders/1p-e7g9fbw503xHYjhWuaKCHBirZWyk7E?usp=sharing).
+
 The weights of our models, UNet11 and UNet16 for neurons only and for neurons and axons can be found on this [link](https://drive.google.com/drive/folders/1DofS65A4cjx3uWAY7AP0IBJkSSqHukA8?usp=sharing).
 
 Ideally, you should respect the following structure when downloading the data we provide:
