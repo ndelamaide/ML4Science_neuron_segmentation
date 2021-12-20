@@ -43,7 +43,7 @@ def main():
     model = model_name(num_classes=args.num_classes, pretrained=args.pretrained)
     optimizer = Adam(model.parameters())
 
-    model, optimizer, start_epoch = load_ckp(os.path.join(os.pardir,args.checkpoint_path), model, optimizer)
+    model, optimizer, start_epoch = load_ckp(os.path.join(os.pardir, args.checkpoint_path), model, optimizer)
     model.eval()
 
     predict(model, file_names, to_path, img_transform, args.num_classes)

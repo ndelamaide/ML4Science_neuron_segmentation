@@ -53,7 +53,7 @@ To train our model, simply run `train.py`. Here is a list of useful arguments:
 - `--model` : the model to use, either UNet11 or UNet16.
 - `--num_classes` : the number of classes. For neurons only, use a value of 1. For neurons and axons, use a value of 3.
 - `--batch_size` : the batch size, which is 4 by default. For num_classes > 1, it is set to 1.
-- `--epochs` : the number of epochs to train the model.
+- `--epochs` : the number of epochs to train the model for.
 - `--checkpoint_path` : the path to load the model from. Only needed when using resuming training from a checkpoint. The path need to start by *ternausnet/*.
 - `--save_checkpoint_name` : the name with which to save the model at the end of each training epoch, for example *unet16.pt*. It needs to end with either *.pt* or *.pth*
 
@@ -66,13 +66,10 @@ After each training epoch, we perform validation on the validation data and reco
 
 # Evaluation
 
+To evaluate our model, run `test.py`. Just like for training, here is a list of useful arguments :
 
+- `--model` : the model to use, either UNet11 or UNet16.
+- `--num_classes` : the number of classes. For neurons only, use a value of 1. For neurons and axons, use a value of 3.
+- `--checkpoint_path` : the path to load the model from. The path need to start by *ternausnet/*.
+- `--file_names_test` : the relative path to the images to evaluate on, by default it's *test_data/images*.
 
-
-@ARTICLE{arXiv:1801.05746,
-         author = {V. Iglovikov and A. Shvets},
-          title = {TernausNet: U-Net with VGG11 Encoder Pre-Trained on ImageNet for Image Segmentation},
-        journal = {ArXiv e-prints},
-         eprint = {1801.05746},
-           year = 2018
-        }
