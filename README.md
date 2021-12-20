@@ -55,14 +55,14 @@ To train our model, simply run `train.py`. Here is a list of useful arguments:
 - `--batch_size` : the batch size, which is 4 by default. For num_classes > 1, it is set to 1.
 - `--epochs` : the number of epochs to train the model.
 - `--checkpoint_path` : the path to load the model from. Only needed when using resuming training from a checkpoint. The path need to start by *ternausnet/*.
-- `save_checkpoint_name` : the name with which to save the model at the end of each training epoch, for example *unet16.pt*. It needs to end with either *.pt* or *.pth*
+- `--save_checkpoint_name` : the name with which to save the model at the end of each training epoch, for example *unet16.pt*. It needs to end with either *.pt* or *.pth*
 
 
 To load our data for training and validation, we use dataloaders that respectivaly perform the following operations:
 - Randomly crop the images to 512 x 768, perform a vertical flip with probability 0.5, perform a horizontal flip with probability 0.5, then normalize the image.
 - Or, perform a center crop to 512 x 768 and then normalize the image.
 
-After each training epoch, we perform validation on the validation data and record the loss and jaccard on the validation set. Then we save the model checkpoint.
+After each training epoch, we perform validation on the validation data and record the loss and jaccard on the validation set. Then we save the model checkpoint, the losses so far as well as the jaccard values.
 
 # Evaluation
 
