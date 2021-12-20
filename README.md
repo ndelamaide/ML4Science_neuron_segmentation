@@ -15,6 +15,7 @@ The weights of our models, UNet11 and UNet16 for neurons only and for neurons an
 
 Ideally, you should respect the following structure when downloading the data we provide:
 
+```bash
 ├── ternausnet
 │   ├── checkpoints
 │   │   └── unet16.pt
@@ -27,22 +28,26 @@ Ideally, you should respect the following structure when downloading the data we
 │   ├── data_job_axons.sh
 │   ├── data_job_binary.sh
 │   ├── ...
+```
 
 ## Pre-processing
 
 The images from the lab came in a folder structured like this : 
 
+```bash
 ├── originals
 │   ├── 200_2
 │   ├── 200_4
 │   ├── 400_2
 │   ├── 400_4
 │   ├── empty
+```
 
 We labeled the images and saved them in a folder following the same structure called *labels*. We also removed duplicate images to obtain a total of 41 images.
 We used the script `data_job_binary.sh` which converts the original images and the labeled images to a train - test - validation split (0.7% - 0.1 % - 0.2 %) of the original images and their masks (neurons only).
 To do so it creates two new folders *data/labels_unordered* and *data/originals_unordered* which contain the labeled and original images respectively numbered from 1 to 41. Then it creates the masks from the labels and finaly creates the split by creating three folders *train_data*, *val_data*, *test_data* structured like this:
 
+```bash
 ├── folder_data
 │   ├── images
 │   │   └──  image_x.tif
@@ -50,7 +55,8 @@ To do so it creates two new folders *data/labels_unordered* and *data/originals_
 │   ├── masks
 │   │   └── mask_x.jpg
 │   │   └── ...
- 
+```
+
 Moreover each of the 41 images and their masks of size 1536 x 2048 where divided in 4 images of size 768 x 1024 by cropping the original images and masks.
 
 For the labeled axons, we used the script `data_job_axons.sh` which creates the masks for the axons and adds them to the pre-existing masks of the neurons. We thus have a mask for two classes : the neurons and axons (as well as background). Then it created the same train - test - validation split as before but with one extra folder in each split : *masks_with_axons*.
@@ -86,6 +92,7 @@ To evaluate our model, run `test.py`. Just like for training, here is a list of 
 
 For each image, it will predict a mask and overlay it on top of the original image. Then it will compute the Intersection over Union (iou or jaccard) for each mask and class and save the results as a pickle file. You will end up with a folder looking like this :
 
+```bash
 ├── eval
 │   ├── masks
 │   │   └──  image_x_mask.jpg
@@ -94,5 +101,6 @@ For each image, it will predict a mask and overlay it on top of the original ima
 │   │   └── image_x_overlay.jpg
 │   │   └── ...
 │   └── jaccard.txt
+```
 
 When used to predict the segmentation of neurons only (num_classes = 1), the jaccard.txt file will contain a list of jaccard indexes. When used for neurons and axons (num_classes = 3), it will produce a list of lists of the form \[jaccard_neurons, jaccard_axons\].
