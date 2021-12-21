@@ -157,10 +157,15 @@ def overlay(image, mask, num_classes=1):
     mask_color = np.empty((mask.shape[0], mask.shape[1], 3))
 
     if num_classes > 1:
+        
+        color = np.zeros(mask.shape)
+        color[mask == 254] = 255 # Axons have value 254
+        mask_color[:, :, 0] = color 
 
-        ## TODO: CHECK SIZE OF MASK 
-        mask_color[:, :, 0] = mask[mask > 128] # Axons have value > 128
-        mask_color[:, :, 1] = mask[mask <= 128]
+        color = zeros
+        color[mask == 127] = 255 # Neurons have value 127
+        mask_color[:, :, 1] = color 
+
         mask_color[:, :, 2] = zeros
 
     else:
@@ -170,7 +175,7 @@ def overlay(image, mask, num_classes=1):
         mask_color[:, :, 1] = mask
         mask_color[:, :, 2] = zeros
 
-    img_overlay = cv2.addWeighted(image, 0.8, mask_color.astype(np.uint8), 0.2, 0)
+    img_overlay = cv2.addWeighted(image, 0.75, mask_color.astype(np.uint8), 0.25, 0)
 
     return img_overlay
     

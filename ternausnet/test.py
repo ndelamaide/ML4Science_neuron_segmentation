@@ -1,4 +1,4 @@
-from validation import predict
+from evaluation import predict, eval
 from dataset import get_file_names
 import pickle
 import os
@@ -25,6 +25,7 @@ def main():
 
     # Model params
     arg('--model', default='UNet16', type=str, choices=model_list.keys())
+    arg('--pretrained', default=True, type=bool)
     arg('--num_classes', default=1, type=int)
     
     args = parser.parse_args()
@@ -42,12 +43,16 @@ def main():
     model = model_name(num_classes=args.num_classes, pretrained=args.pretrained)
     optimizer = Adam(model.parameters())
 
-    model, optimizer, start_epoch = load_ckp(os.path.join(os.pardir,args.checkpoint_path), model, optimizer)
+    model, optimizer, start_epoch = load_ckp(os.path.join(os.pardir, args.checkpoint_path), model, optimizer)
     model.eval()
 
-    predict(model, file_names, to_path, img_transform)
+    predict(model, file_names, to_path, img_transform, args.num_classes)
 
     # After prediction run evaluation
+    jaccard = eval(file_names, to_path, args.num_classes)
+
+    with open(to_path + "jaccard.txt", "wb") as fp:
+            pickle.dump(jaccard, fp)
 
 if __name__ == '__main__':
     main()
