@@ -2,12 +2,19 @@
 
 The goal of the project was to perform image segmentation on images of neuronal cells growing on a diamond.
 
+You can look at our specific work about image analysis in the folder image_analysis and the LIVECell adaptaion in the livecell directory, but the main results of the working model is explained below. 
+
 We implemented two variants of the TernausNet model : one is a U-Net with a VGG11 Encoder Pre-Trained on ImageNet for Image Segmentation, and the other uses VGG16 instead of VGG11 ([arxiv paper](https://arxiv.org/abs/1801.05746)).
 The GitHub for the TernausNet models can be found [here](https://github.com/ternaus/TernausNet).
 
 The lab gave us several images that we had to label by hand. As a first step, we only labeled the neurons and trained our models on those images. As a second step, we also labeled the axons and trained our models to segment both the neurons and axons.
 
 ## Data and models
+
+Before starting we advise you to work on a particular environment for example with Anaconda (conda create --name ml4science) and to have a version of python above or equal to 3.6. Then all the libraries can be download using: 
+```bash
+pip install -r requirements.txt
+```
 
 The original images and their labels (neurons only and neurons + axons) can be found on this [link](https://drive.google.com/drive/folders/1p-e7g9fbw503xHYjhWuaKCHBirZWyk7E?usp=sharing).
 
@@ -104,3 +111,13 @@ For each image, it will predict a mask and overlay it on top of the original ima
 ```
 
 When used to predict the segmentation of neurons only (num_classes = 1), the jaccard.txt file will contain a list of jaccard indexes. When used for neurons and axons (num_classes = 3), it will produce a list of lists of the form \[jaccard_neurons, jaccard_axons\].
+
+To plot the learning curves of the different trained models you can run `ternausnet/plot_result.py` and the plots will be saved automatically in the ternausnet folder. 
+
+# Axons and grid analysis
+
+The files for axon directions and grid analysis are in the form of jupyter notebooks because they are more interactive. Indeed the file are meant to create the different figures of the report and can be used as : 
+- `draw_axons.ipynb` : Draw the first principal component as well as its orientation on the axons of an image data.
+- `find_most_common_slope.ipynb` : Take all images and output the resulting slope of the grid in those images, if there is indeed a grid in the image.
+- `orientation.ipynb` : Take an image, process it to find the grid orientation and shows the image with the lines corresponding to the grid slope and print on the image the slope value.
+- `plot_histograms.ipynb` : plot the histograms for the different classes of images and perform the t-test to know whether axons grow differently between plates.
