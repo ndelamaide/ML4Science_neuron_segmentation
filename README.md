@@ -110,7 +110,7 @@ For each image, it will predict a mask and overlay it on top of the original ima
 │   └── jaccard.txt
 ```
 
-When used to predict the segmentation of neurons only (num_classes = 1), the jaccard.txt file will contain a list of jaccard indexes. When used for neurons and axons (num_classes = 3), it will produce a list of lists of the form \[jaccard_neurons, jaccard_axons\].
+When used to predict the segmentation of neurons only (num_classes = 1), the jaccard.txt file will contain a list of jaccard indexes. When used for neurons and axons (num_classes = 3), it will produce a list of lists of the form \[jaccard_neurons, jaccard_axons\]. It also prints on the console the mean jaccard, the standard deviation and the highest jaccard index for each metric.
 
 To plot the learning curves of the different trained models you can run `ternausnet/plot_result.py` and the plots will be saved automatically in the ternausnet folder. 
 
