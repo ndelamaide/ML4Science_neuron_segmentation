@@ -2,6 +2,8 @@
 
 The goal of the project was to perform image segmentation on images of neuronal cells growing on a diamond.
 
+You can look at our specific work about image analysis in the folder image_analysis and the LIVECell adaptaion in the livecell directory, but the main results of the working model is explained below. 
+
 We implemented two variants of the TernausNet model : one is a U-Net with a VGG11 Encoder Pre-Trained on ImageNet for Image Segmentation, and the other uses VGG16 instead of VGG11 ([arxiv paper](https://arxiv.org/abs/1801.05746)).
 The GitHub for the TernausNet models can be found [here](https://github.com/ternaus/TernausNet).
 
@@ -104,3 +106,5 @@ For each image, it will predict a mask and overlay it on top of the original ima
 ```
 
 When used to predict the segmentation of neurons only (num_classes = 1), the jaccard.txt file will contain a list of jaccard indexes. When used for neurons and axons (num_classes = 3), it will produce a list of lists of the form \[jaccard_neurons, jaccard_axons\].
+
+To plot the learning curves of the different trained models you can run ternausnet/plot_result.py and the plots will be saved automatically in the ternausnet folder. 
