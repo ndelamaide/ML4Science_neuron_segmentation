@@ -112,4 +112,12 @@ For each image, it will predict a mask and overlay it on top of the original ima
 
 When used to predict the segmentation of neurons only (num_classes = 1), the jaccard.txt file will contain a list of jaccard indexes. When used for neurons and axons (num_classes = 3), it will produce a list of lists of the form \[jaccard_neurons, jaccard_axons\].
 
-To plot the learning curves of the different trained models you can run ternausnet/plot_result.py and the plots will be saved automatically in the ternausnet folder. 
+To plot the learning curves of the different trained models you can run `ternausnet/plot_result.py` and the plots will be saved automatically in the ternausnet folder. 
+
+# Axons and grid analysis
+
+The files for axon directions and grid analysis are in the form of jupyter notebooks because they are more interactive. Indeed the file are meant to create the different figures of the report and can be used as : 
+- `draw_axons.ipynb` : Draw the first principal component as well as its orientation on the axons of an image data.
+- `find_most_common_slope.ipynb` : Take all images and output the resulting slope of the grid in those images, if there is indeed a grid in the image.
+- `orientation.ipynb` : Take an image, process it to find the grid orientation and shows the image with the lines corresponding to the grid slope and print on the image the slope value.
+- `plot_histograms.ipynb` : plot the histograms for the different classes of images and perform the t-test to know whether axons grow differently between plates.
