@@ -11,6 +11,11 @@ The lab gave us several images that we had to label by hand. As a first step, we
 
 ## Data and models
 
+Before starting we advise you to work on a particular environment for example with Anaconda (conda create --name ml4science) and to have a version of python above or equal to 3.6. Then all the libraries can be download using: 
+```bash
+pip install -r requirements.txt
+```
+
 The original images and their labels (neurons only and neurons + axons) can be found on this [link](https://drive.google.com/drive/folders/1p-e7g9fbw503xHYjhWuaKCHBirZWyk7E?usp=sharing).
 
 The weights of our models, UNet11 and UNet16 for neurons only and for neurons and axons can be found on this [link](https://drive.google.com/drive/folders/1DofS65A4cjx3uWAY7AP0IBJkSSqHukA8?usp=sharing).
