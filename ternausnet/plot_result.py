@@ -28,7 +28,7 @@ def plot_results(train_metrics,val_metrics,name):
     plt.title('Training loss')
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
-    plt.legend()
+    plt.legend(prop={'size': 12})
     plt.savefig('loss.png')
     plt.show()
 
@@ -44,7 +44,7 @@ def plot_results(train_metrics,val_metrics,name):
     plt.title('Validation Jaccard')
     plt.xlabel('Epochs')
     plt.ylabel('Jaccard')
-    plt.legend()
+    plt.legend(prop={'size': 12})
     plt.savefig('jaccard.png')
     plt.show()
 
