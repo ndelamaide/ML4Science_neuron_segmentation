@@ -13,7 +13,7 @@ def main():
     parser = argparse.ArgumentParser()
     arg = parser.add_argument
 
-    arg('--path_image', default="ternausnet/test_data/images/image_1.tif", type=str)
+    arg('--path_image', default="ternausnet/test_data/images/image_60.tif", type=str)
     arg('--path_overlay_11', type=str) # overlay of unet11
     arg('--path_overlay_16', type=str) #overlay of unet16
     arg('--num_classes', default=1, type=int)
