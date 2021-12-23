@@ -51,7 +51,7 @@ The images from the lab came in a folder structured like this :
 ```
 
 We labeled the images and saved them in a folder following the same structure called *labels*. We also removed duplicate images to obtain a total of 41 images.
-We used the script `data_job_binary.sh` which converts the original images and the labeled images to a train - test - validation split (0.7% - 0.1 % - 0.2 %) of the original images and their masks (neurons only).
+We used the script `data_job_binary.sh` which converts the original images and the labeled images to a train - test - validation split (0.7% - 0.2 % - 0.1 %) of the original images and their masks (neurons only).
 To do so it creates two new folders *data/labels_unordered* and *data/originals_unordered* which contain the labeled and original images respectively numbered from 1 to 41. Then it creates the masks from the labels and finaly creates the split by creating three folders *train_data*, *val_data*, *test_data* structured like this:
 
 ```bash
