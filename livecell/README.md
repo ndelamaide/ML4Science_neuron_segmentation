@@ -25,7 +25,7 @@ As a first step yxou should clone LIVECell repository locally, as well as center
 
 LIVECell uses a pretrained model named centermask2 that can be found [here](https://github.com/youngwanLEE/centermask2) and that is based on [detectron2] (https://github.com/facebookresearch/detectron2). 
 
-Before starting we advise you to work on a particular environment for example with Anaconda (conda create --name livecell) and to have a version of python above or equal to 3.6. Then all the libraries can be download using: 
+Before starting we advise you to work on a particular environment for example with Anaconda (`conda create --name livecell` and `conda activate livecell`) and to have a version of python above or equal to 3.6. Then all the libraries can be download using: 
 ```bash
 pip install -r requirements.txt
 ```
