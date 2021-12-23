@@ -11,7 +11,7 @@ The lab gave us several images that we had to label by hand. As a first step, we
 
 ## Data and models
 
-Before starting we advise you to work on a particular environment for example with Anaconda (conda create --name ml4science) and to have a version of python above or equal to 3.6. Then all the libraries can be download using: 
+Before starting we advise you to work on a particular environment for example with Anaconda (`conda create --name ml4science` and `conda activate ml4science`) and to have a version of python above or equal to 3.6. Then all the libraries can be download using: 
 ```bash
 pip install -r requirements.txt
 ```
@@ -110,7 +110,7 @@ For each image, it will predict a mask and overlay it on top of the original ima
 │   └── jaccard.txt
 ```
 
-When used to predict the segmentation of neurons only (num_classes = 1), the jaccard.txt file will contain a list of jaccard indexes. When used for neurons and axons (num_classes = 3), it will produce a list of lists of the form \[jaccard_neurons, jaccard_axons\].
+When used to predict the segmentation of neurons only (num_classes = 1), the jaccard.txt file will contain a list of jaccard indexes. When used for neurons and axons (num_classes = 3), it will produce a list of lists of the form \[jaccard_neurons, jaccard_axons\]. It also prints on the console the mean jaccard, the standard deviation and the highest jaccard index for each metric.
 
 To plot the learning curves of the different trained models you can run `ternausnet/plot_result.py` and the plots will be saved automatically in the ternausnet folder. 
 
