@@ -11,7 +11,7 @@ The lab gave us several images that we had to label by hand. As a first step, we
 
 ## Data and models
 
-Before starting we advise you to work on a particular environment for example with Anaconda (conda create --name ml4science) and to have a version of python above or equal to 3.6. Then all the libraries can be download using: 
+Before starting we advise you to work on a particular environment for example with Anaconda (`conda create --name ml4science` and `conda activate ml4science`) and to have a version of python above or equal to 3.6. Then all the libraries can be download using: 
 ```bash
 pip install -r requirements.txt
 ```
