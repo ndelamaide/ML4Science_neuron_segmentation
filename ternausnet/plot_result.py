@@ -41,9 +41,9 @@ def plot_results(train_metrics,val_metrics,name):
         plt.plot(epoch_rng, jaccard_val, label=name[i])
 
     plt.xticks(np.linspace(0, 100, 11))
-    plt.title('Validation Jaccard')
+    plt.title('Validation Jaccard index')
     plt.xlabel('Epochs')
-    plt.ylabel('Jaccard')
+    plt.ylabel('Jaccard index')
     plt.legend(prop={'size': 12})
     plt.savefig('jaccard.png')
     plt.show()
